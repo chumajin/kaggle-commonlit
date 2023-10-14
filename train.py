@@ -111,6 +111,7 @@ if __name__ == "__main__":
         cfg.valid_batch = opt.validbatch
   
   cfg.savepath = opt.savepath
+  cfg.train_fold = opt.train_fold
 
 
   # 2. load samples
