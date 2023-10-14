@@ -234,9 +234,7 @@ if __name__ == "__main__":
                 else:
                     beststep +=1
 
-                if beststep == cfg.earlystop:
-                    print("Early stop end process")
-                    break
+                
 
             ## 3. multi validation ##
 
