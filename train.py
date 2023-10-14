@@ -84,7 +84,7 @@ if __name__ == "__main__":
 
   parser.add_argument("--modelno", type=str, default=2,help="makemodels")
 
-  parser.add_argument("--fulltrain", type=bool, default=True,help="if you want to train 4kfold change here False")
+  parser.add_argument('--train_fold', required=True, nargs="*", type=int,default=4, help='a list of training fold. 4 is full train')
 
   parser.add_argument("--savepath", type=str, default='.')
   parser.add_argument("--inputpath", type=str, default='.')
@@ -109,8 +109,6 @@ if __name__ == "__main__":
   if opt.changebatch:
         cfg.train_batch = opt.trainbatch
         cfg.valid_batch = opt.validbatch
-  if opt.fulltrain:
-        cfg.train_fold = [4]
 
   # 2. load samples
 
