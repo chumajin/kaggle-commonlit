@@ -58,9 +58,7 @@ class CFG():
     accumulation_steps = 1
     max_grad_norm = 1000
 
-    epochs=4
-    scheduler='cosine' # ['linear', 'cosine']
-
+    
     grad_check = True # gradient check point
 
     layer_start = 4 
@@ -76,6 +74,12 @@ class CFG():
     layerwise_weight_decay = 0.01 
     layerwise_adam_epsilon = 1e-6 
     layerwise_use_bertadam = False
+
+    num_cycles=0.5
+    num_warmup_steps=0
+    warmupratio = 0
+    scheduler='cosine' # ['linear', 'cosine']
+
 
 
     collate = True
