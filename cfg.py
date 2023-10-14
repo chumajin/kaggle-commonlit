@@ -77,6 +77,7 @@ class CFG():
     layerwise_adam_epsilon = 1e-6 
     layerwise_use_bertadam = False
 
+
     collate = True
     fulltrain = False
 
