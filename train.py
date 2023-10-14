@@ -185,6 +185,9 @@ if __name__ == "__main__":
 
         for epoch in range(4):
 
+            if epoch >= cfg.evalstartepoch:
+              cfg.evalstepswitch = True
+
             if cfg.evalstepswitch == False:
 
                 allpreds,losses,score,model,_,_,_= training(
