@@ -79,6 +79,7 @@ class CFG():
     num_warmup_steps=0
     warmupratio = 0
     scheduler='cosine' # ['linear', 'cosine']
+    epochs = 4
 
 
 
