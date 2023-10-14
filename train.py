@@ -109,6 +109,9 @@ if __name__ == "__main__":
   if opt.changebatch:
         cfg.train_batch = opt.trainbatch
         cfg.valid_batch = opt.validbatch
+  
+  cfg.savepath = opt.savepath
+
 
   # 2. load samples
 
