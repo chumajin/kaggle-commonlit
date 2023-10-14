@@ -24,7 +24,7 @@ class CFG():
 
 # ============== 1. change parts =============
 
-    seed = 179
+    seed = 157
     maxlen = 1024
     model = "microsoft/deberta-v3-large"
     #pooling
