@@ -9,16 +9,12 @@ def training(
     model,
     optimizer,
     scheduler,
-
     evalstepswitch,
     p_valid,
     fold,
     bestscore,
-
-    epoch
-
+    epoch,
     fgm = None
-
 ):
 
     model.train()
