@@ -118,6 +118,11 @@ if __name__ == "__main__":
   cfg.savepath = opt.savepath
   cfg.train_fold = opt.train_fold
 
+  cfg.savevalid = cfg.savepath + "/savevalid"
+  os.makedirs(cfg.savepath,exist_ok=True)
+  os.makedirs(cfg.savevalid,exist_ok=True)
+  
+
 
   # 2. load samples
 
@@ -130,6 +135,12 @@ if __name__ == "__main__":
   train = train.join(train_prom.set_index("prompt_id"),on="prompt_id",how="left")
   test = test.join(test_prom.set_index("prompt_id"),on="prompt_id",how="left")
   train["fold"] = train["prompt_id"].map({'39c16e':0,'814d6b':1, 'ebad26':2, '3b9047':3})
+
+
+  # 2.1 make 39 classification ref ) https://www.kaggle.com/code/alexandervc/commonlit-levenshtein-distances?scriptVersionId=141542492&cellId=23
+  train["special"] = np.round(6.9*(0.63*train["content"]+(1-0.63)*train["wording"]))
+  train["special"] = train["special"] + 10
+  train["special"] = train["special"].astype("int")
 
   # 3. Dataset
   train_dataset = NLPDataSet(train)
@@ -168,7 +179,6 @@ if __name__ == "__main__":
                 model,
                 optimizer,
                 scheduler,
-
                 False,
                 p_valid,
                 fold,

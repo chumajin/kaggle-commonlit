@@ -80,5 +80,17 @@ def pickle_load(path):
   
 label = ['content', 'wording']
 
+def cleantext2(text):
+  text = text.replace(". ",".")
+  text = text.replace(".  ",".")
+  text = text.replace(".   ",".")
+  text = text.replace(".",". ")
 
-##
+
+  text = text.replace(", ",",")
+  text = text.replace(",  ",",")
+  text = text.replace(",   ",",")
+  text = text.replace(",",", ")
+
+
+  return text

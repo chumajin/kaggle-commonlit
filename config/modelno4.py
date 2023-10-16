@@ -1,5 +1,5 @@
 
-EXP = 3
+EXP = 4
 
 compname = "commonlit-evaluate-student-summaries"
 
@@ -15,6 +15,8 @@ class CFG():
 
 # ============== 0. basic =============
 
+    input_dir = f"./{compname}"
+
     savepath =  f"./Commonlit-modelno{EXP}"
     savevalid = savepath + "/savevalid"
 
@@ -24,21 +26,21 @@ class CFG():
 
 # ============== 1. change parts =============
 
-    seed = 237
-    maxlen = 850
+    seed = 277
+    maxlen = 868
     model = "microsoft/deberta-v3-large"
     #pooling
     pooling = 'none' # mean, max, min, attention, weightedlayer, cls
-    layerwise_lr = 7.5e-5 
+    layerwise_lr = 5e-5 
 
     stoptrain = 3
-    stopvalidcount = 2 # stop fulltrain at this point
+    stopvalidcount = 6 # stop fulltrain at this point
 
-    fulltrain_all = False # if allfull train
+    fulltrain_all = True # if allfull train
 
-    textlength = True
+    textlength = False
 
-    arcface = False
+    arcface = True
 
 
 # ============== 2.Data  =============
@@ -92,8 +94,6 @@ class CFG():
 
 
 cfg = CFG()
-os.makedirs(cfg.savepath, exist_ok=True)
-os.makedirs(cfg.savevalid,exist_ok=True)
 
 tokenizer = AutoTokenizer.from_pretrained(cfg.model)
 tokenizer.save_pretrained(cfg.savepath)
@@ -106,8 +106,11 @@ class NLPDataSet(Dataset):
 
         self.df = df.copy()
 
-        self.text = self.df["text"].values + " : " + self.df["prompt_question"].values + " : " + self.df["prompt_title"].values + " : "  + self.df["prompt_text"].values
-        self.text2 = self.df["text"].values
+        self.prompt = self.df["prompt_text"].map(cleantext2).values
+        self.text = self.df["text"].map(cleantext2).values + " : " +self.df["prompt_title"].map(cleantext2).values  + " : " + self.df["prompt_question"].map(cleantext2).values
+
+        self.special = self.df["special"].values
+
 
     def __len__(self):
 
@@ -117,6 +120,7 @@ class NLPDataSet(Dataset):
 
 
         tokens = tokenizer.encode_plus(self.text[idx],
+                                       self.prompt[idx],
                                           return_tensors = None,
                                           add_special_tokens = True,
                                           max_length = cfg.maxlen,
@@ -125,19 +129,11 @@ class NLPDataSet(Dataset):
                                           )
 
 
-        tokens2 = tokenizer.encode_plus(self.text2[idx],
-                                          return_tensors = None,
-                                          add_special_tokens = True,
-                                          max_length = cfg.maxlen,
-                                      #    pad_to_max_length = True, # これを入れるかは微妙。collate使うならいらない気がする poolingのとき、collateあり。
-                                      #    truncation = True
-                                          )
-
-        textlength = len(tokens2["input_ids"])
 
         ids = torch.tensor(tokens['input_ids'], dtype=torch.long)
         mask = torch.tensor(tokens['attention_mask'], dtype=torch.long)
         target = self.df[label].iloc[idx].values
+        target2 = self.special[idx]
         token_type_ids = torch.tensor(tokens['token_type_ids'], dtype=torch.long)
 
 
@@ -146,11 +142,78 @@ class NLPDataSet(Dataset):
                   'mask': mask,
                   'token_type_ids': token_type_ids,
                   'targets': target,
-                  "textlength":textlength
+                  "targets2":target2
 
               }
 
+import math
 
+class ArcMarginProduct(nn.Module):
+    r"""Implement of large margin arc distance: :
+        Args:
+            in_features: size of each input sample
+            out_features: size of each output sample
+            s: norm of input feature
+            m: margin
+            cos(theta + m)
+        """
+    def __init__(self, in_features, out_features, s=30.0,
+                 m=0.50, easy_margin=False, ls_eps=0.0):
+        super(ArcMarginProduct, self).__init__()
+        self.in_features = in_features
+        self.out_features = out_features
+        self.s = s
+        self.m = m
+        self.ls_eps = ls_eps  # label smoothing
+        self.weight = nn.Parameter(torch.FloatTensor(out_features, in_features))
+        nn.init.xavier_uniform_(self.weight)
+
+        self.easy_margin = easy_margin
+        self.cos_m = math.cos(m)
+        self.sin_m = math.sin(m)
+        self.th = math.cos(math.pi - m)
+        self.mm = math.sin(math.pi - m) * m
+
+    def forward(self, input, label):
+        # --------------------------- cos(theta) & phi(theta) ---------------------
+        cosine = F.linear(F.normalize(input), F.normalize(self.weight))
+        sine = torch.sqrt(1.0 - torch.pow(cosine, 2))
+        phi = cosine * self.cos_m - sine * self.sin_m
+        if self.easy_margin:
+            phi = torch.where(cosine > 0, phi, cosine)
+        else:
+            phi = torch.where(cosine > self.th, phi, cosine - self.mm)
+        # --------------------------- convert label to one-hot ---------------------
+        # one_hot = torch.zeros(cosine.size(), requires_grad=True, device='cuda')
+        one_hot = torch.zeros(cosine.size(), device=device)
+        one_hot.scatter_(1, label.view(-1, 1).long(), 1)
+        if self.ls_eps > 0:
+            one_hot = (1 - self.ls_eps) * one_hot + self.ls_eps / self.out_features
+        # -------------torch.where(out_i = {x_i if condition_i else y_i) ------------
+        output = (one_hot * phi) + ((1.0 - one_hot) * cosine)
+        output *= self.s
+
+        return output
+
+
+def linear_combination(x, y, epsilon):
+    return (1 - epsilon) * x + epsilon * y
+
+def reduce_loss(loss, reduction='mean'):
+    return loss.mean() if reduction == 'mean' else loss.sum() if reduction == 'sum' else loss
+
+class LabelSmoothingCrossEntropy(nn.Module):
+    def __init__(self, epsilon=0.05, reduction='mean'):
+        super().__init__()
+        self.epsilon = epsilon
+        self.reduction = reduction
+
+    def forward(self, preds, target):
+        n = preds.size()[-1]
+        log_preds = F.log_softmax(preds, dim=-1)
+        loss = reduce_loss(-log_preds.sum(dim=-1), self.reduction)
+        nll = F.nll_loss(log_preds, target, reduction=self.reduction)
+        return linear_combination(nll, loss/n, self.epsilon)
 
 class NLPModel(nn.Module):
     def __init__(self,num_labels,model_name):
@@ -172,6 +235,7 @@ class NLPModel(nn.Module):
         self.config.attention_dropout = 0.007
         self.config.attention_probs_dropout_prob = 0.007
 
+
         self.model = AutoModel.from_pretrained(model_name, config=self.config)
         self.model.save_pretrained(cfg.savepath)
 
@@ -190,28 +254,42 @@ class NLPModel(nn.Module):
         elif cfg.pooling == 'min':
             self.pool = MinPooling()
         elif cfg.pooling == 'attention':
-            self.pool = AttentionPooling(self.config.hidden_size*2)
+            self.pool = AttentionPooling(self.config.hidden_size)
         elif cfg.pooling == 'weightedlayer':
             self.pool = WeightedLayerPooling(self.config.num_hidden_layers, layer_start = cfg.layer_start, layer_weights = None)
 
         self.fc = nn.Linear(self.config.hidden_size, 2)
         self._init_weights(self.fc)
 
+        self.bn = nn.BatchNorm1d(self.config.hidden_size)
+        self.dropout = nn.Dropout(0)
+        self.fc2 = nn.Linear(self.config.hidden_size, cfg.emb_dim)
+        self.bn2 = nn.BatchNorm1d(cfg.emb_dim)
 
-    def forward(self, ids, mask, token_type_ids,textlength, targets=None):
+        self.head = ArcMarginProduct(cfg.emb_dim,
+                                   38,
+                                   s=cfg.s,
+                                   m=cfg.m,
+                                   easy_margin=cfg.margin,
+                                   ls_eps=cfg.eps)
+        self._init_weights(self.fc2)
+
+
+
+
+    def forward(self, ids, mask, token_type_ids=None, targets=None,targets2=None):
+
 
         output = self.model(ids, mask, token_type_ids)
-        bsize = len(ids)
+        output = output[0][:,0,:]
 
-        pooled_outputs = []
-        hidden_states = output[0]
-        for i in range(bsize):
-            pooled_output = hidden_states[i,:textlength[i]].mean(dim=0)
-            pooled_outputs.append(pooled_output)
-        output = torch.stack(pooled_outputs)
-
-
+        features = self.bn(output)
+        features = self.dropout(features)
+        features = self.fc2(features)
+        features = self.bn2(features)
+        output2 = self.head(features,targets2)
         output = self.fc(output)
+
 
         loss = 0
         metrics = 0
@@ -219,11 +297,16 @@ class NLPModel(nn.Module):
         if targets is not None:
 
           loss = self.loss(output, targets)
+          loss2 = self.loss2(output2,targets2)
+
+          loss = 0.7*loss + 0.3 * loss2
+#          metrics = self.monitor_metrics(output, targets)
 
         output = output.detach().cpu().numpy()
 
 
-        return output, loss, metrics
+        return output,loss, metrics
+
 
 
 
@@ -275,3 +358,11 @@ class NLPModel(nn.Module):
 
         return loss
 
+    def loss2(self, outputs, targets):
+
+        loss_fct = LabelSmoothingCrossEntropy()
+        loss = loss_fct(outputs.squeeze(-1), targets.squeeze(-1))
+
+        return loss
+
+   
