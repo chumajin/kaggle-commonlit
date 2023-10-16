@@ -36,7 +36,7 @@ class CFG():
 
     fulltrain_all = False # if allfull train
 
-    textlength = True
+    textlength = False
 
     arcface = False
 
