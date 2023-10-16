@@ -162,7 +162,14 @@ class Collate:
 
         # calculate max token length of this batch
         batch_max = max([len(ids) for ids in output["ids"]])
-        output["targets"] =torch.tensor( output["targets"], dtype=torch.float)
+        if "targets" in batch[0]:
+            output["targets"] = [sample["targets"] for sample in batch]
+
+            if cfg.traintype=="classification":
+              output["targets"] =torch.tensor( output["targets"], dtype=torch.long)
+
+            else:
+              output["targets"] =torch.tensor( output["targets"], dtype=torch.float)
 
         # add padding
         if tokenizer.padding_side == "right":
