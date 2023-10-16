@@ -36,6 +36,8 @@ class CFG():
 
     fulltrain_all = False # if allfull train
 
+    textlength = False
+
 
 # ============== 2.Data  =============
 

@@ -24,12 +24,19 @@ class CFG():
 
 # ============== 1. change parts =============
 
-    seed = 179
+    seed = 157
     maxlen = 1024
     model = "microsoft/deberta-v3-large"
     #pooling
     pooling = 'attention' # mean, max, min, attention, weightedlayer, cls
-    layerwise_lr = 7.5e-5 # 1e-5からでいいかも。ここをかえる
+    layerwise_lr = 7.5e-5 
+
+    stoptrain = 3
+    stopvalidcount = 5 # stop fulltrain at this point
+
+    fulltrain_all = False # if allfull train
+
+    textlength = False
 
 
 # ============== 2.Data  =============
@@ -53,12 +60,10 @@ class CFG():
     accumulation_steps = 1
     max_grad_norm = 1000
 
-    epochs=4
-    scheduler='cosine' # ['linear', 'cosine']
-
+    
     grad_check = True # gradient check point
 
-    layer_start = 4 # 使っていないと思う
+    layer_start = 4 
     #init_weight
     init_weight = 'normal' # normal, xavier_uniform, xavier_normal, kaiming_uniform, kaiming_normal, orthogonal
     #re-init
@@ -67,10 +72,18 @@ class CFG():
 
     #Layer-Wise Learning Rate Decay
     llrd = True # switch
-    layerwise_lr_decay = 0.9 # 過去経験では、0.9が最適
-    layerwise_weight_decay = 0.01 # このままでok
-    layerwise_adam_epsilon = 1e-6 # このままでok
+    layerwise_lr_decay = 0.9 
+    layerwise_weight_decay = 0.01 
+    layerwise_adam_epsilon = 1e-6 
     layerwise_use_bertadam = False
+
+    num_cycles=0.5
+    num_warmup_steps=0
+    warmupratio = 0
+    scheduler='cosine' # ['linear', 'cosine']
+    epochs = 4
+
+
 
     collate = True
     fulltrain = False
@@ -157,7 +170,7 @@ class Collate:
         output["mask"] = torch.tensor(output["mask"], dtype=torch.long)
 
 
-        ### token type idsのケア ###
+        ### token type ids ###
 
         output["token_type_ids"] = [sample["token_type_ids"] for sample in batch]
         if tokenizer.padding_side == "right":
