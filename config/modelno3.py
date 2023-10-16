@@ -6,7 +6,6 @@ compname = "commonlit-evaluate-student-summaries"
 import os
 from util import *
 from pooling import *
-from dataset_loader import *
 
 
 ## config ##
