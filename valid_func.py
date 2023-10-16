@@ -28,7 +28,13 @@ def validating(valid_dataloader,p_valid,model,fold):
                 targets = a["targets"].to(device,non_blocking=True)
 
                 tokentype = a["token_type_ids"].to(device,non_blocking=True)
-                logits, loss, metric = model(ids,mask, token_type_ids=tokentype,targets=targets)
+
+                if cfg.textlength:
+                    textlength = a["textlength"]
+                    logits, loss, metric = model(ids,mask, tokentype,textlength,targets=targets)
+                else:
+                    logits, loss, metric = model(ids,mask, token_type_ids=tokentype,targets=targets)
+
 
                 losses.append(loss.mean().item())
 
