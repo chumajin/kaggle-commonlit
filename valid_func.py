@@ -1,6 +1,8 @@
 from util import *
 from metric import *
 from cfg import *
+from dataset_loader import *
+
 
 def validating(valid_dataloader,p_valid,model,fold):
     
@@ -30,10 +32,14 @@ def validating(valid_dataloader,p_valid,model,fold):
                 tokentype = a["token_type_ids"].to(device,non_blocking=True)
 
                 if cfg.textlength:
-                    textlength = a["textlength"]
-                    logits, loss, metric = model(ids,mask, tokentype,textlength,targets=targets)
+                      textlength = a["textlength"]
+                      logits, loss, metric = model(ids,mask, tokentype,textlength,targets=targets)
+                elif cfg.arcface:
+                    targets2 = a["targets2"].to(device,non_blocking=True)
+                    logits, loss, metric = model(ids,mask, token_type_ids=tokentype,targets=targets,targets2=targets2)
                 else:
                     logits, loss, metric = model(ids,mask, token_type_ids=tokentype,targets=targets)
+
 
 
                 losses.append(loss.mean().item())

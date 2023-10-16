@@ -6,16 +6,6 @@ import time
 
 from util import *
 
-from cfg import *
-from metric import *
-from dataset_loader import *
-from pooling import *
-from model_utils import *
-from train_func import *
-from valid_func import *
-
-
-
 
 def initialization(fold):
     
@@ -103,6 +93,18 @@ if __name__ == "__main__":
   pprint(opt)
 
   # 1. change config
+
+  import shutil
+
+  shutil.copy(f"./config/modelno{opt.modelno}.py","cfg.py")
+  from cfg import *
+  from metric import *
+  from dataset_loader import *
+  from pooling import *
+  from model_utils import *
+  from train_func import *
+  from valid_func import *
+
 
   if opt.changelr:
         cfg.lr = opt.lr
