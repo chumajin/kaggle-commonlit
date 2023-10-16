@@ -373,4 +373,4 @@ class NLPModel(nn.Module):
 
         return loss
 
-   
+cfg = CFG()

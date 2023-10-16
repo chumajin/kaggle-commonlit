@@ -255,3 +255,5 @@ class NLPModel(nn.Module):
         loss = loss_fct(outputs.squeeze(-1), targets.squeeze(-1))
 
         return loss
+    
+cfg = CFG()
