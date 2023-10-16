@@ -96,7 +96,10 @@ if __name__ == "__main__":
 
   import shutil
 
-  shutil.copy(f"./config/modelno{opt.modelno}.py","cfg.py")
+  script_path = os.path.abspath(__file__)
+  script_directory = os.path.dirname(script_path)
+
+  shutil.copy(f"{script_directory}/config/modelno{opt.modelno}.py",f"{script_directory}/cfg.py")
   from cfg import *
   from metric import *
   from dataset_loader import *
