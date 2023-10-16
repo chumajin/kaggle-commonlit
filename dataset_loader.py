@@ -23,7 +23,7 @@ class Collate:
 
         if cfg.arcface:
             output["targets2"] = [sample["targets2"] for sample in batch]
-            output["targets2"] =torch.tensor( output["targets2"], dtype=torch.float)
+            output["targets2"] =torch.tensor( output["targets2"], dtype=torch.long)
 
 
         # add padding
