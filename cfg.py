@@ -135,7 +135,7 @@ class NLPDataSet(Dataset):
 
         ids = torch.tensor(tokens['input_ids'], dtype=torch.long)
         mask = torch.tensor(tokens['attention_mask'], dtype=torch.long)
-        target = torch.tensor(self.df[label].iloc[idx],dtype=torch.float)
+        target = self.df[label].iloc[idx].values
         token_type_ids = torch.tensor(tokens['token_type_ids'], dtype=torch.long)
 
 
@@ -162,15 +162,7 @@ class Collate:
 
         # calculate max token length of this batch
         batch_max = max([len(ids) for ids in output["ids"]])
-
-        if "targets" in batch[0]:
-            output["targets"] = [sample["targets"] for sample in batch]
-
-            if cfg.traintype=="classification":
-              output["targets"] =torch.tensor( output["targets"], dtype=torch.long)
-
-            else:
-              output["targets"] =torch.tensor( output["targets"], dtype=torch.float)
+        output["targets"] =torch.tensor( output["targets"], dtype=torch.float)
 
         # add padding
         if tokenizer.padding_side == "right":
