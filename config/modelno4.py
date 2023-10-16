@@ -104,7 +104,6 @@ class CFG():
 cfg = CFG()
 
 tokenizer = AutoTokenizer.from_pretrained(cfg.model)
-tokenizer.save_pretrained(cfg.savepath)
 
 ## Dataset
 

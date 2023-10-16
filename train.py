@@ -101,13 +101,6 @@ if __name__ == "__main__":
 
   shutil.copy(f"{script_directory}/config/modelno{opt.modelno}.py",f"{script_directory}/cfg.py")
   from cfg import *
-  from metric import *
-  from dataset_loader import *
-  from pooling import *
-  from model_utils import *
-  from train_func import *
-  from valid_func import *
-
 
   if opt.changelr:
         cfg.lr = opt.lr
@@ -121,6 +114,20 @@ if __name__ == "__main__":
   cfg.savevalid = cfg.savepath + "/savevalid"
   os.makedirs(cfg.savepath,exist_ok=True)
   os.makedirs(cfg.savevalid,exist_ok=True)
+
+  tokenizer.save_pretrained(cfg.savepath)
+
+
+
+  from metric import *
+  from dataset_loader import *
+  from pooling import *
+  from model_utils import *
+  from train_func import *
+  from valid_func import *
+
+
+
   
 
 
