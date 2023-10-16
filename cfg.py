@@ -107,32 +107,11 @@ class NLPDataSet(Dataset):
         self.text = self.df["text"].values + " : " + self.df["prompt_question"].values + " : " + self.df["prompt_title"].values + " : "  + self.df["prompt_text"].values
         self.text2 = self.df["text"].values
 
-        self.noiseratio = cfg.noiseratio
-
-        if isinstance(label, list):
-
-          if label[0] not in self.df.columns.to_list():
-            self.mode = "infer"
-            self.df[label] = -1
-          else:
-            self.mode = "train"
-
-        else:
-          if label not in self.df.columns.to_list():
-            self.mode = "infer"
-            self.df[label] = -1
-          else:
-            self.mode = "train"
-
-
-
     def __len__(self):
 
         return len(self.df)
 
     def __getitem__(self,idx):
-
-
 
 
         tokens = tokenizer.encode_plus(self.text[idx],
