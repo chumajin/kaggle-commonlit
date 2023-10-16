@@ -92,6 +92,15 @@ class CFG():
     collate = True
     fulltrain = False
 
+    ## 5. arcface
+    arcface = True
+    s =  13
+    m = 0.0001
+    margin = False
+    eps = 0.0
+
+    emb_dim = 1024
+
 
 cfg = CFG()
 
