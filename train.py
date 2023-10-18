@@ -37,7 +37,7 @@ def initialization(fold):
 
 
     classifier = NLPModel(cfg.num_labels,cfg.model)
-    if CFG.reinit:
+    if cfg.reinit:
         classifier = re_initializing_layer(classifier, classifier.config, cfg.reinit_n)
     classifier.to(device)
 
@@ -332,7 +332,7 @@ if __name__ == "__main__":
 
   # 5. makeoof
 
-  filepath = [os.path.join(CFG.savepath,s) for s in os.listdir(CFG.savepath) if "end" in s]
+  filepath = [os.path.join(cfg.savepath,s) for s in os.listdir(cfg.savepath) if "end" in s]
   labels = ["content","wording"]
   usecols = ["content_pred","wording_pred"]
 
