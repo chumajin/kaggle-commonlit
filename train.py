@@ -326,11 +326,11 @@ if __name__ == "__main__":
                 print(f"epoch : {epoch}, train loss : {losses}, valid loss : {lossmean}, score : {score}, bestscore : {bestscore}")
                 allvalids.append(p_valid2)
 
-            p_valid2 = pd.read_csv(f"{cfg.savepath}/valid{fold}_seed{cfg.seed}.csv")
-            allvaliddf.append(p_valid2)
+                p_valid2 = pd.read_csv(f"{cfg.savepath}/valid{fold}_seed{cfg.seed}.csv")
+                allvaliddf.append(p_valid2)
 
-            tmpdf = pd.DataFrame({"test":[1]})
-            tmpdf.to_csv(f"{cfg.savepath}/end{fold}_score{bestscore:.4f}.csv",index=False)
+                tmpdf = pd.DataFrame({"test":[1]})
+                tmpdf.to_csv(f"{cfg.savepath}/end{fold}_score{bestscore:.4f}.csv",index=False)
 
   # 5. makeoof
 
