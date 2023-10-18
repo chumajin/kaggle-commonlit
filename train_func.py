@@ -112,7 +112,8 @@ def training(
                 score,lossmean,p_valid2 = validating(valid_dataloader,p_valid,model,fold)
                 valpreds222 = p_valid2[cols].values
 
-                np.save(f"{cfg.savevalid}/valid{fold}_epoch{epoch}_num{valcount}",valpreds222)
+                if fulltrain == False:
+                      np.save(f"{cfg.savevalid}/valid{fold}_epoch{epoch}_num{valcount}",valpreds222)
 
                 if fulltrain:
                   if valcount == cfg.stopvalidcount:
