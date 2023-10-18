@@ -15,6 +15,7 @@ def training(
     fold,
     bestscore,
     epoch,
+    fulltrain
     fgm = None
 ):
 
@@ -113,7 +114,7 @@ def training(
 
                 np.save(f"{cfg.savevalid}/valid{fold}_epoch{epoch}_num{valcount}",valpreds222)
 
-                if cfg.fulltrain:
+                if fulltrain:
                   if valcount == cfg.stopvalidcount:
                     state = {
                                 'state_dict': model.state_dict(),
@@ -144,7 +145,7 @@ def training(
 
                 #### Early stop ####
 
-                if cfg.fulltrain == False:
+                if fulltrain == False:
 
                   if bestscore > score:
 
@@ -187,7 +188,7 @@ def training(
 
     score = get_score(alltargets,allpreds )
 
-    if cfg.fulltrain == False:
+    if fulltrain == False:
           print(score)
 
     losses = np.mean(losses)

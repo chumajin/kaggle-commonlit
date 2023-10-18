@@ -193,6 +193,7 @@ if __name__ == "__main__":
                 fold,
                 bestscore,
                 epoch,
+                cfg.fulltrain,
                 awp
             )
         state = {
@@ -232,6 +233,7 @@ if __name__ == "__main__":
                     fold,
                     bestscore,
                     epoch,
+                    cfg.fulltrain,
                     awp
                 )
 
@@ -281,12 +283,12 @@ if __name__ == "__main__":
                     model,
                     optimizer,
                     scheduler,
-
                     True,
                     p_valid,
                     fold,
                     bestscore,
                     epoch,
+                    cfg.fulltrain,
                     awp
                 )
 
