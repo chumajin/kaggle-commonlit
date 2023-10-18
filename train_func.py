@@ -122,7 +122,7 @@ def training(
                             }
 
 
-                    torch.save(state, os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
+                    torch.save(state, f"modelno{cfg.modelno}.pth")
                     p_valid2.to_csv(f"{cfg.savepath}/valid{cfg.fold}_seed{cfg.seed}.csv",index=False)
 
                     del state

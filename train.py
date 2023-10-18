@@ -117,6 +117,8 @@ if __name__ == "__main__":
 
   tokenizer.save_pretrained(cfg.savepath)
 
+  cfg.modelno = opt.modelno
+
 
 
   from metric import *
@@ -198,9 +200,9 @@ if __name__ == "__main__":
                             #  'optimizer_dict': optimizer.state_dict(),
                             "bestscore":bestscore
                         }
-
-
-        torch.save(state, os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
+        
+        
+        torch.save(state, os.path.join(cfg.savepath,f"modelno{opt.modelno}.pth"))
         print("fulltrain save")
 
         del state
