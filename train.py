@@ -209,6 +209,8 @@ if __name__ == "__main__":
         torch.cuda.empty_cache()
         gc.collect()
 
+        break
+
     else:
 
         for epoch in range(4):
@@ -233,37 +235,40 @@ if __name__ == "__main__":
                     awp
                 )
 
-                score,lossmean,p_valid2 = validating(valid_dataloader,p_valid,model,fold)
+                if cfg.fulltrain == False:
 
 
-                #### 2.1 Early stop ####
-
-                if bestscore > score:
-
-                    print(f"Best score is {bestscore} → {score}. Saving model")
-                    bestscore = score
-
-                    state = {
-                                'state_dict': model.state_dict(),
-                                #  'optimizer_dict': optimizer.state_dict(),
-                                "bestscore":bestscore
-                            }
+                    score,lossmean,p_valid2 = validating(valid_dataloader,p_valid,model,fold)
 
 
-                    torch.save(state, os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
-                    p_valid2.to_csv(f"{cfg.savepath}/valid{cfg.fold}_seed{cfg.seed}.csv",index=False)
+                    #### 2.1 Early stop ####
 
-                    del state
-                    torch.cuda.empty_cache()
-                    gc.collect()
+                    if bestscore > score:
+
+                        print(f"Best score is {bestscore} → {score}. Saving model")
+                        bestscore = score
+
+                        state = {
+                                    'state_dict': model.state_dict(),
+                                    #  'optimizer_dict': optimizer.state_dict(),
+                                    "bestscore":bestscore
+                                }
+
+
+                        torch.save(state, os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
+                        p_valid2.to_csv(f"{cfg.savepath}/valid{cfg.fold}_seed{cfg.seed}.csv",index=False)
+
+                        del state
+                        torch.cuda.empty_cache()
+                        gc.collect()
 
 
 
 
-                    beststep=0
+                        beststep=0
 
-                else:
-                    beststep +=1
+                    else:
+                        beststep +=1
 
                 
 
@@ -288,35 +293,36 @@ if __name__ == "__main__":
                 score = stepbestscore
                 lossmean = stepbestlossmean
 
-                if bestscore > stepbestscore:
+                if cfg.fulltrain == False:
 
-                    print(f"Best score is {bestscore} → {stepbestscore}. ")
+                    if bestscore > stepbestscore:
 
-                    bestscore = stepbestscore
+                        print(f"Best score is {bestscore} → {stepbestscore}. ")
 
-
-
-                    if cfg.loadmodel:
-
-                        state = torch.load(os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
-                        model.load_state_dict(state["state_dict"])
-
-                        del state
-
-                        torch.cuda.empty_cache()
-                        gc.collect()
-
-                    beststep=0
-
-                else:
-                    beststep += 1
-
-              
+                        bestscore = stepbestscore
 
 
-            print(f"epoch : {epoch}, train loss : {losses}, valid loss : {lossmean}, score : {score}, bestscore : {bestscore}")
 
-            allvalids.append(p_valid2)
+                        if cfg.loadmodel:
+
+                            state = torch.load(os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
+                            model.load_state_dict(state["state_dict"])
+
+                            del state
+
+                            torch.cuda.empty_cache()
+                            gc.collect()
+
+                        beststep=0
+
+                    else:
+                        beststep += 1
+
+                
+
+            if cfg.fulltrain == False:
+                print(f"epoch : {epoch}, train loss : {losses}, valid loss : {lossmean}, score : {score}, bestscore : {bestscore}")
+                allvalids.append(p_valid2)
 
         p_valid2 = pd.read_csv(f"{cfg.savepath}/valid{fold}_seed{cfg.seed}.csv")
         allvaliddf.append(p_valid2)

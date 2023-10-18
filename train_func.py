@@ -90,15 +90,15 @@ def training(
             optimizer.zero_grad()
             scheduler.step()
 
-        if (step+1) % 100 ==0:
+#        if (step+1) % 100 ==0:
+#
+#          if cfg.max_grad_norm >0:
+#            print ("Step [{}/{}] Loss: {:.3f} Time: {:.1f} Metric: {:.3f} lr : {} Grad : {}".format(step+1, steps_per_epoch, loss.item(), time.time()-t,0,scheduler.get_lr()[0],grad_norm))
+#          else:
+#            print ("Step [{}/{}] Loss: {:.3f} Time: {:.1f} Metric: {:.3f} lr : {}".format(step+1, steps_per_epoch, loss.item(), time.time()-t,0,scheduler.get_lr()[0]))
 
-          if cfg.max_grad_norm >0:
-            print ("Step [{}/{}] Loss: {:.3f} Time: {:.1f} Metric: {:.3f} lr : {} Grad : {}".format(step+1, steps_per_epoch, loss.item(), time.time()-t,0,scheduler.get_lr()[0],grad_norm))
-          else:
-            print ("Step [{}/{}] Loss: {:.3f} Time: {:.1f} Metric: {:.3f} lr : {}".format(step+1, steps_per_epoch, loss.item(), time.time()-t,0,scheduler.get_lr()[0]))
-
-          torch.cuda.empty_cache()
-          gc.collect()
+#          torch.cuda.empty_cache()
+#          gc.collect()
 
 
       ### multi validation ####
@@ -123,7 +123,7 @@ def training(
 
 
                     torch.save(state, f"modelno{cfg.modelno}.pth")
-                    p_valid2.to_csv(f"{cfg.savepath}/valid{cfg.fold}_seed{cfg.seed}.csv",index=False)
+                   # p_valid2.to_csv(f"{cfg.savepath}/valid{cfg.fold}_seed{cfg.seed}.csv",index=False)
 
                     del state
                     torch.cuda.empty_cache()

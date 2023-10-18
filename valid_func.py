@@ -64,7 +64,9 @@ def validating(valid_dataloader,p_valid,model,fold):
     p_valid33 = pd.concat([p_valid33,preddf],axis=1)
 
     score = get_score(p_valid33[label].values,p_valid33[cols].values)
-    print(f"fold {fold} score is {score}")
+
+    if cfg.fulltrain == False:
+         print(f"fold {fold} score is {score}")
 
     lossmean = np.mean(losses)
 
