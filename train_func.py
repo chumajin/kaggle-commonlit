@@ -144,33 +144,35 @@ def training(
 
                 #### Early stop ####
 
-                if bestscore > score:
+                if cfg.fulltrain == False:
 
-                    print(f"Best score is {bestscore} → {score}. Saving model")
-                    bestscore = score
-                    bestlossmean = lossmean
+                  if bestscore > score:
 
-                    state = {
-                                'state_dict': model.state_dict(),
-                              #  'optimizer_dict': optimizer.state_dict(),
-                                "bestscore":bestscore
-                            }
+                      print(f"Best score is {bestscore} → {score}. Saving model")
+                      bestscore = score
+                      bestlossmean = lossmean
 
-
-                    torch.save(state, os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
-                    p_valid2.to_csv(f"{cfg.savepath}/valid{cfg.fold}_seed{cfg.seed}.csv",index=False)
-
-                    del state
-                    torch.cuda.empty_cache()
-                    gc.collect()
+                      state = {
+                                  'state_dict': model.state_dict(),
+                                #  'optimizer_dict': optimizer.state_dict(),
+                                  "bestscore":bestscore
+                              }
 
 
+                      torch.save(state, os.path.join(cfg.savepath,f"model{fold}_seed{cfg.seed}.pth"))
+                      p_valid2.to_csv(f"{cfg.savepath}/valid{cfg.fold}_seed{cfg.seed}.csv",index=False)
+
+                      del state
+                      torch.cuda.empty_cache()
+                      gc.collect()
 
 
-                else:
-                    print(f"no improvement. best is {bestscore}. score is {score}")
 
-                    bestlossmean = lossmean
+
+                  else:
+                      print(f"no improvement. best is {bestscore}. score is {score}")
+
+                      bestlossmean = lossmean
 
         else:
             bestlossmean = 0 # validationのlossを出力する
@@ -185,7 +187,8 @@ def training(
 
     score = get_score(alltargets,allpreds )
 
-    print(score)
+    if cfg.fulltrain == False:
+          print(score)
 
     losses = np.mean(losses)
 

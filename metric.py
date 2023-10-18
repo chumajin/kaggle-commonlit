@@ -1,5 +1,6 @@
 
 from util import *
+from cfg import *
 
 def MCRMSE(y_trues, y_preds):
     scores = []
@@ -10,7 +11,9 @@ def MCRMSE(y_trues, y_preds):
         y_pred = y_preds[:,i]
         score = mean_squared_error(y_true, y_pred, squared=False) # RMSE
         scores.append(score)
-        print(score)
+
+        if cfg.fulltrain == False:
+              print(score)
     mcrmse_score = np.mean(scores)
     return mcrmse_score, scores
 
