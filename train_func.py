@@ -15,7 +15,7 @@ def training(
     fold,
     bestscore,
     epoch,
-    fulltrain
+    fulltrain,
     fgm = None
 ):
 
