@@ -142,6 +142,7 @@ def training(
 
 
 
+
                 model.train()
 
                 #### Early stop ####

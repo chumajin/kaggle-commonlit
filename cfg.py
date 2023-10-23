@@ -91,6 +91,7 @@ class CFG():
     fulltrain = False
 
 
+
 cfg = CFG()
 os.makedirs(cfg.savepath, exist_ok=True)
 os.makedirs(cfg.savevalid,exist_ok=True)

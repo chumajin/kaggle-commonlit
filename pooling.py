@@ -5,6 +5,7 @@ class MeanPooling(nn.Module):
     def __init__(self):
         super(MeanPooling, self).__init__()
 
+
     def forward(self, last_hidden_state, attention_mask):
         input_mask_expanded = attention_mask.unsqueeze(-1).expand(last_hidden_state.size()).float()
         sum_embeddings = torch.sum(last_hidden_state * input_mask_expanded, 1)

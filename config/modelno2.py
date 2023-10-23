@@ -22,6 +22,7 @@ class CFG():
     traintype = "multiregression" # binary / regression / classification / multiregression
 
 
+
 # ============== 1. change parts =============
 
     seed = 157

@@ -284,6 +284,7 @@ class NLPModel(nn.Module):
 
 
 
+
     def forward(self, ids, mask, token_type_ids=None, targets=None,targets2=None):
 
 

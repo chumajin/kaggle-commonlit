@@ -201,6 +201,8 @@ if __name__ == "__main__":
                             #  'optimizer_dict': optimizer.state_dict(),
                             "bestscore":bestscore
                         }
+
+       
         
         
         torch.save(state, os.path.join(cfg.savepath,f"model{opt.modelno}.pth"))

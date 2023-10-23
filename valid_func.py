@@ -19,6 +19,7 @@ def validating(valid_dataloader,p_valid,model,fold):
     num = 0
     num2 = 0
 
+
     for step,a in tqdm(enumerate(valid_dataloader)):
 
             losses = []

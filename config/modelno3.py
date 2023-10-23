@@ -88,6 +88,7 @@ class CFG():
 
 
 
+
     collate = True
     fulltrain = False
 

@@ -6,6 +6,7 @@ class Collate:
     def __init__(self, tokenizer):
         self.tokenizer = tokenizer
 
+
     def __call__(self, batch):
         output = dict()
         output["ids"] = [sample["ids"] for sample in batch]

@@ -92,6 +92,7 @@ class CFG():
     fulltrain = False
 
 
+
 cfg = CFG()
 
 tokenizer = AutoTokenizer.from_pretrained(cfg.model)
