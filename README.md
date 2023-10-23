@@ -62,7 +62,7 @@ python train.py \
 ~~~
 
 example :
-In this case, ./output folder will make and the model weight will save in it as model3.pth.
+In this case, I explain the case of making model no 3 in the table of chapter 2. The savepath (./output folder) will make and the model weight will save in it as model3.pth.
 
 ~~~
 python train.py \
