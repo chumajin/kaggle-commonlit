@@ -1,3 +1,7 @@
+## This code uses the DeepLab pre-trained model provided under the CC-BY-4.0 license.
+## https://huggingface.co/deepset/deberta-v3-large-squad2
+
+
 
 EXP = 7
 
