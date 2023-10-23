@@ -72,7 +72,7 @@ python train.py \
 --inputpath $inputpath
 ~~~
 
-In this case, train_fold 4 means the fulltrain model used at the end of the competition. If you want to create it with 4kfold, change it like this : 0 1 2 3. Also, if you are using a different environment, and GPU memory is not enough, please adjust train_batch, valid_batch in the py file in config. In that case, it is recommended that you also change layerwise_lr to give the condition.
+In this case, train_fold 4 means the fulltrain model used at the end of the competition. If you want to create it with 4kfold, change it like this : 0 1 2 3. Also, if you are using a different environment, and GPU memory is not enough, please adjust train_batch, valid_batch in the py file per model no in config. In that case, it is recommended that you also change layerwise_lr to give the condition.
 
 # 4. inference
 
