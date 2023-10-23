@@ -62,11 +62,11 @@ python train.py \
 ~~~
 
 example :
-In this case, ./output folder will make and the model weight will save in it as model4.pth.
+In this case, ./output folder will make and the model weight will save in it as model3.pth.
 
 ~~~
 python train.py \
---modelno 4 \
+--modelno 3 \
 --train_fold 4 \
 --savepath output \
 --inputpath $inputpath
@@ -77,24 +77,24 @@ In this case, train_fold 4 means the fulltrain model used at the end of the comp
 # 4. inference
 
 For kaggle competition, you can use the inference code on the kaggle notebook [here](https://www.kaggle.com/code/chumajin/commonlit2-4th-place-inference). After you upload your model to kaggle dataset, you replace the modelpath in each according to the model no and Infno(EXP).
-The following code is the example that replaces the model4.pth.
+The following code is the example that replaces the model3.pth.
 
 In the kaggle code
 
 ~~~
-# 4.modelno4 : expno 72
+# 3.modelno3 : expno 63
 ~~~
 
 ~~~
-!python exp276wopp.py --EXP 72 \
-    --modelpath /kaggle/input/commonlit2-4th-place-models/model4_seed277.pth \
+!python exp224fs_maxlen1500wopp.py --EXP 63 \
+    --modelpath /kaggle/input/commonlit2-4th-place-models/model4_seed237.pth \
   #  --debug True
 ~~~
 
-Example for inference using model4.pth
+Example for inference using model3.pth you made.
 ~~~
-!python exp276wopp.py --EXP 72 \
-    --modelpath /kaggle/input/****/model4.pth \
+!python exp224fs_maxlen1500wopp.py --EXP 63 \
+    --modelpath /kaggle/input/****/model3.pth \
   #  --debug True
 ~~~
 
