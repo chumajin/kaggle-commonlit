@@ -203,7 +203,7 @@ if __name__ == "__main__":
                         }
         
         
-        torch.save(state, os.path.join(cfg.savepath,f"modelno{opt.modelno}.pth"))
+        torch.save(state, os.path.join(cfg.savepath,f"model{opt.modelno}.pth"))
         print("fulltrain save")
 
         del state
