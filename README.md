@@ -45,7 +45,14 @@ The following training code makes only one model weight. Please specify the **mo
 | 5-2     | 3     | deberta-v3-large        | 868                 | 868              |                 | ✓       |           |      |          |            | 0.4979                 |
 | 7       | 331   | deberta-v3-large-squad2 | 1050                | 950              | ✓               |         | ✓         |      |          |            | 0.4993                 |
 
-※ model no 1 and model no 6 can make by using kuro_B's training code
+※ model no 1 and model no 6 as follows can make by using kuro_B's training code [here](https://github.com/kurokuroB/kaggle-commonlit2-4th_place_solution-my_training_code). 
+
+| modelno | InfNo | model                   | training<br/>maxlen | inference maxlen | input           | pooling |           |      | 2nd loss | preprocess | cv of 4kfold earlystop |
+|---------|-------|-------------------------|---------------------|------------------|-----------------|---------|-----------|------|----------|------------|------------------------|
+|         |       |                         |                     |                  | original prompt | cls     | attention | mean |          |            |                        |
+| 1       | 91    | deberta-v3-large        | 768                 | 1500             |                 | ✓       |           |      |          |            | 0.4818                 |
+| 6       | 259   | deberta-v3-large-squad2 | 768                 | 1500             |                 | ✓       |           |      |          |            | 0.4952                 |
+
 
 
 # 3. Execute training
