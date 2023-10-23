@@ -22,12 +22,14 @@ In other cases, please refer to the requirement.txt file for further instruction
 
 The input data is required to have the following structure (same in the kaggle competition dataset).
 
+~~~
 inputpath
     ├── prompts_text.csv
     ├── prompts_train.csv
     ├── sample_submission.csv
     ├── summaries_text.csv
     └── summaries_train.csv
+~~~
 
 # 2. Select model
 
